@@ -1,1 +1,203 @@
 /* CUSTOM STYLES HERE */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+p{
+  margin: 0;
+}
+
+body {
+  font-family: Arial, sans-serif;
+}
+
+img{
+  display:block;
+  max-width:100%;
+}
+
+button{
+  cursor:pointer;
+}
+
+.header {
+  background: #444444;
+  padding: 5px 0;
+}
+
+.desktop-container {
+  width:min(90%,1200px);
+  margin:auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.hamburger-btn{
+  color: white;
+  background: transparent;
+  border: 0;
+  font-size: xx-large;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  color: #222;
+}
+
+.brand-img-mobile{
+  display: block;
+}
+
+.brand-img-desktop {
+  display: none;
+}
+
+.menu{
+  display: none;
+}
+
+.location-menu{
+  display: flex;
+  align-items: baseline;
+  height: fit-content;
+}
+
+.nav-link {
+  text-decoration: none;
+  color: #8d8d8d;
+  padding: 0;
+}
+
+main{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-bottom: 70px;
+}
+
+.map-wrap{
+  width:100%;
+  aspect-ratio: 1 / 1;   /* mobile */
+  overflow: hidden;
+}
+
+.map{
+  width:100%;
+  height:100%;
+  object-fit: cover;
+  display:block;
+}
+
+.location-section{
+  width:50%;
+  height:600px;
+}
+
+.page-header{
+  display: none;
+}
+
+.content-container{
+  width: 100%;
+}
+
+.buttons{
+  position: fixed;
+  inset: auto 0 0 0;
+  height:60px;
+  display:flex;
+}
+
+.buttons button{
+  width: 50%;
+  height: 100%;
+  border: 0;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  color: orange;
+}
+
+@media (min-width:800px) {
+  .header{
+    background: white;
+    padding: 25px 0;
+  }
+
+  .desktop-container {
+    max-width: 1000px;
+  }
+
+  .brand-img-desktop{
+    display: block;
+  }
+
+  .brand-img-mobile{
+    display: none;
+  }
+
+  .hamburger-btn{
+    display: none;
+  }
+
+  .location-icon{
+    display: none;
+  }
+
+  .buttons{
+    display: none;
+  }
+
+  .page-header{
+    display: block;
+    width: 1000px;
+  }
+
+  .page-header h2{
+    font-weight: 100;
+  }
+
+  .menu{
+    display: flex;
+    align-items: baseline;
+    color: #444444;
+    gap: 30px;
+  }
+
+  main{
+    padding-top: 50px;
+  }
+
+  .content-container{
+    display: flex;
+    justify-content: center;
+  }
+
+  .content{
+    width: fit-content;
+    display: flex;
+    justify-content: center;
+    border: 1px solid lightgray;
+  }
+
+.location-list{
+  flex: 0 0 500px;
+}
+
+  .map-wrap{
+    width: 100%;
+    max-width: 500px;
+    aspect-ratio: 3 / 4;
+    overflow: hidden;
+  }
+
+  .map{
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+  }
+
+}
