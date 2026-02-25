@@ -10,7 +10,7 @@
       integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
       crossorigin="anonymous"
     />
-    <link href="/styles/styles.css" rel="stylesheet" />
+    <link href="styles/styles.css" rel="stylesheet" />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
@@ -69,11 +69,36 @@
           <div class="location-list"></div>
           <div class="map-wrap">
             <img class="map" />
+            <div class="overlay" >
+              <div class="overlay-backdrop"></div>
+
+              <div class="overlay-panel">
+
+                <h3 class="ov-name"></h3>
+                <p class="ov-address"></p>
+                <p class="ov-phone"></p>
+
+                <div class="ov-hours"></div>
+
+                <div class="ov-actions">
+                  <button class="ov-number">
+                    <img src="assets/phone-icon.png" alt="Phone number">
+                    <p>123-456-7890</p>
+                  </button>
+                  <button class="ov-directions">
+                    <img src="assets/direction-icon.png" alt="Directions" />
+                    <p>GET DIRECTIONS</p>
+                  </button>
+                </div>
+
+                <button class="ov-details">VIEW FULL DETAILS</button>
+              </div>
+            </div>
           </div>
         </div>
         <div class="buttons">
-          <button>List</button>
-          <button>Map</button>
+          <button class="btn-list">List</button>
+          <button class="btn-map">Map</button>
         </div>
       </section>
     </main>
