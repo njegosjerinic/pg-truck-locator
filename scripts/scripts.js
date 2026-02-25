@@ -125,7 +125,6 @@ function renderOverlay() {
   $(".ov-name").text(l.name);
   $(".ov-address").text(`${l.address}, ${l.city}, ${l.state} ${l.postal_code}`);
 
-  // ako nema phone u JSON-u možeš dodati fallback
   $(".ov-phone").text(l.phone ? l.phone : "Phone: (555) 123-4567");
 
   $(".ov-hours").html(`
@@ -143,7 +142,6 @@ function renderOverlay() {
 
 function renderView() {
   if (window.innerWidth > 768) {
-    // desktop → uvijek prikazuj oba
     $(".location-list").show();
     $(".map-wrap").show();
     return;
