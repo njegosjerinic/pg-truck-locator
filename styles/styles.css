@@ -142,6 +142,7 @@ main{
   margin: 20px;
   padding: 20px;
   height: 300px;
+  cursor: pointer;
 }
 
 .card-buttons{
@@ -188,6 +189,13 @@ main{
   padding: 20px;
   margin: 25px;
 }
+
+.ov-actions{
+  display: flex;
+  width: 80%;
+  justify-content: space-between;
+}
+
 
 @media (min-width:800px) {
   .header{

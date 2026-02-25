@@ -45,6 +45,10 @@ $(document).ready(function () {
     state.isActiveLocation = location;
     state.selectedLocation = location;
     state.isOverlayOpen = true;
+    if (window.innerWidth < 782) {
+      state.activeView = "map";
+      renderView();
+    }
     renderView();
     render();
   });
@@ -67,6 +71,22 @@ $(document).ready(function () {
     render();
   });
 
+  $(document).on("click", ".btn-directions", function (e) {
+    e.preventDefault();
+
+    if (!state.selectedLocation) return;
+
+    const l = state.selectedLocation;
+
+    const destination = encodeURIComponent(
+      `${l.address}, ${l.city}, ${l.state} ${l.postal_code}`,
+    );
+
+    const url = `https://www.google.com/maps/dir/?api=1&destination=${destination}`;
+
+    window.open(url, "_blank", "noopener,noreferrer");
+  });
+
   // DEMO
   $(".map").attr(
     "src",
@@ -86,7 +106,7 @@ function renderLocations() {
                     <p>${element.city},${element.state}${element.postal_code}</p>
                 </div>
                 <div class="card-buttons">
-                    <button>Directions</button>
+                    <button class="btn-directions">Directions</button>
                     <button class="more-info">More info</button>
                 </div>
             </div>
@@ -157,12 +177,13 @@ function renderView() {
 }
 
 function renderButtons() {
-  $(".btn-list, .btn-map").removeClass("active-button")
-  if (state.activeView === "list") $(".btn-list").addClass("active-button")
-  if (state.activeView === "map") $(".btn-map").addClass("active-button")
+  $(".btn-list, .btn-map").removeClass("active-button");
+  if (state.activeView === "list") $(".btn-list").addClass("active-button");
+  if (state.activeView === "map") $(".btn-map").addClass("active-button");
 }
 
 function render() {
+  renderButtons();
   renderView();
   renderActiveCard();
   renderMap();
