@@ -1,6 +1,7 @@
 let state = {
   locations: [],
   selectedLocation: null,
+  isActiveLocation: null,
   isOverlayOpen: false,
   activeView: "list",
 };
@@ -15,15 +16,21 @@ $(document).ready(function () {
     // work with response data here
     state.locations = response;
     renderLocations();
-    render()
+    render();
   });
 
-  $(document).on("click", ".card", function () {
+  $(document).on("click", ".card", function (e) {
+    e.preventDefault();
+    e.stopPropagation();
     const id = $(this).data("id");
     const location = state.locations.find((l) => l.id == id);
     state.selectedLocation = location;
+    state.isActiveLocation = null;
     renderMap();
-    console.log(state.locations);
+    if (window.innerWidth < 782) {
+      state.activeView = "map";
+      renderView();
+    }
     if (state.isOverlayOpen == true) {
       state.isOverlayOpen = false;
       render();
@@ -31,27 +38,32 @@ $(document).ready(function () {
   });
 
   $(document).on("click", ".more-info", function (e) {
+    e.preventDefault();
     e.stopPropagation();
-
     const id = $(this).closest(".card").data("id");
     const location = state.locations.find((l) => l.id == id);
+    state.isActiveLocation = location;
     state.selectedLocation = location;
     state.isOverlayOpen = true;
+    renderView();
     render();
   });
 
   $(document).on("click", ".overlay-close, .overlay-backdrop", function () {
     state.isOverlayOpen = false;
+    state.isActiveLocation = null;
     render();
   });
 
   $(document).on("click", ".btn-list", function () {
     state.activeView = "list";
+    renderButtons();
     render();
   });
 
   $(document).on("click", ".btn-map", function () {
     state.activeView = "map";
+    renderButtons();
     render();
   });
 
@@ -96,8 +108,8 @@ function renderMap() {
 
 function renderActiveCard() {
   $(".card").removeClass("active");
-  if (!state.selectedLocation) return;
-  $(`.card[data-id="${state.selectedLocation.id}"]`).addClass("active");
+  if (!state.isActiveLocation) return;
+  $(`.card[data-id="${state.isActiveLocation.id}"]`).addClass("active");
 }
 
 function renderOverlay() {
@@ -113,7 +125,6 @@ function renderOverlay() {
   $(".ov-name").text(l.name);
   $(".ov-address").text(`${l.address}, ${l.city}, ${l.state} ${l.postal_code}`);
 
-  // ako nema phone u JSON-u možeš dodati fallback
   $(".ov-phone").text(l.phone ? l.phone : "Phone: (555) 123-4567");
 
   $(".ov-hours").html(`
@@ -131,7 +142,6 @@ function renderOverlay() {
 
 function renderView() {
   if (window.innerWidth > 768) {
-    // desktop → uvijek prikazuj oba
     $(".location-list").show();
     $(".map-wrap").show();
     return;
@@ -144,6 +154,12 @@ function renderView() {
     $(".location-list").hide();
     $(".map-wrap").show();
   }
+}
+
+function renderButtons() {
+  $(".btn-list, .btn-map").removeClass("active-button")
+  if (state.activeView === "list") $(".btn-list").addClass("active-button")
+  if (state.activeView === "map") $(".btn-map").addClass("active-button")
 }
 
 function render() {
