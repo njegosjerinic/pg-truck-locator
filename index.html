@@ -10,6 +10,10 @@
       integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
       crossorigin="anonymous"
     />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
     <link href="styles/styles.css" rel="stylesheet" />
     <link
       rel="stylesheet"
@@ -61,18 +65,23 @@
       </div>
     </header>
     <main>
-      <section class="page-header">
-        <h2>Found 3 Taco Trucks in 92121</h2>
-      </section>
       <section class="content-container">
+        <div class="page-header">
+          <h2>Found 3 Taco Trucks in 92121</h2>
+        </div>
         <div class="content">
           <div class="location-list"></div>
           <div class="map-wrap">
             <img class="map" />
+            <div class="placeholder">
+              <p>Click on a location card to load a map</p>
+            </div>
             <div class="overlay">
               <div class="overlay-backdrop"></div>
-
               <div class="overlay-panel">
+                <div class="overlay-closer">X</div>
+                <img src="/assets/placeholder.png" alt="" />
+
                 <h3 class="ov-name"></h3>
                 <p class="ov-address"></p>
                 <p class="ov-phone"></p>
@@ -84,13 +93,14 @@
                   </button>
                   <button class="ov-directions">
                     <img src="assets/direction-icon.png" alt="Directions" />
-                    <p>GET DIRECTIONS</p>
+                    <p>Get Directions</p>
                   </button>
                 </div>
 
                 <div class="ov-hours"></div>
-
-                <button class="ov-details">VIEW FULL DETAILS</button>
+                <div class="details-container">
+                  <button class="ov-details">VIEW FULL DETAILS</button>
+                </div>
               </div>
             </div>
           </div>
