@@ -6,16 +6,45 @@ let state = {
   activeView: "list",
 };
 
+const now = new Date(
+  new Date().toLocaleString("en-US", {
+    timeZone: "America/Los_Angeles",
+  }),
+);
+
+const dayIndex = now.getDay();
+
 $(document).ready(function () {
   $.ajax({
     method: "GET",
-    url: "https://my.api.mockaroo.com/locations.json?key=e6f81d90",
+    url: "locations.json", //"https://my.api.mockaroo.com/locations.json?key=e6f81d90",
     dataType: "json",
   }).done(function (response) {
-    // work with response data here
     state.locations = response;
     renderLocations();
     render();
+
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        function (position) {
+          state.userLocation = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          };
+
+          calculateAllDistances();
+          renderLocations();
+          render();
+        },
+        function () {
+          renderLocations();
+          render();
+        },
+      );
+    } else {
+      renderLocations();
+      render();
+    }
   });
 
   $(document).on("click", ".card", function (e) {
@@ -25,12 +54,14 @@ $(document).ready(function () {
     const location = state.locations.find((l) => l.id == id);
     state.selectedLocation = location;
     state.isActiveLocation = null;
-    $('.placeholder').hide();
+    $(".placeholder").hide();
+    console.log(now);
     renderMap();
     if (window.innerWidth < 782) {
       state.activeView = "map";
+      console.log(state.activeView);
       renderView();
-      
+      renderButtons();
     }
     if (state.isOverlayOpen == true) {
       state.isOverlayOpen = false;
@@ -41,17 +72,13 @@ $(document).ready(function () {
   $(document).on("click", ".more-info", function (e) {
     e.preventDefault();
     e.stopPropagation();
-    $('.placeholder').hide();
+    $(".placeholder").hide();
     const id = $(this).closest(".card").data("id");
     const location = state.locations.find((l) => l.id == id);
     state.isActiveLocation = location;
     state.selectedLocation = location;
     state.isOverlayOpen = true;
-    if (window.innerWidth < 782) {
-      state.activeView = "map";
-      renderView();
-    }
-    renderView();
+    state.activeView = "map";
     render();
   });
 
@@ -76,7 +103,8 @@ $(document).ready(function () {
   $(document).on("click", ".btn-directions, .ov-directions", function (e) {
     e.preventDefault();
     const id = $(this).closest(".card").data("id");
-    const location = state.locations.find((l) => l.id == id);
+    const location =
+      state.locations.find((l) => l.id == id) || state.selectedLocation;
     state.selectedLocation = location;
 
     if (!state.selectedLocation) return;
@@ -105,8 +133,6 @@ $(document).ready(function () {
       window.open(url, "_blank", "noopener,noreferrer");
     }
   });
-
-
 });
 
 function renderLocations() {
@@ -121,6 +147,7 @@ function renderLocations() {
         <div class="card-text">
           <div class="card-head">
             <h3>${element.name}</h3>
+            <p>${element.distance ? element.distance + " mi" : ""}</p>
           </div>
 
           <p>${element.address}</p>
@@ -180,34 +207,51 @@ function renderOverlay() {
   $(".ov-phone").text(l.phone ? l.phone : "Phone: (555) 123-4567");
 
   $(".ov-hours").html(`
-    <div>
-    <p>Mon:</p> <p>${l.monday_open} - ${l.monday_close}</p>
-    </div>
-    <div>
-    <p>Tue:</p> <p>${l.tuesday_open} - ${l.tuesday_close}</p>
-    </div>
-    <div>
-    <p>Wed:</p> <p>${l.wednesday_open} - ${l.wednesday_close}</p>
-    </div>
-    <div>
-    <p>Thu:</p> <p>${l.thursday_open} - ${l.thursday_close}</p>
-    </div>
-    <div>
-    <p>Fri:</p> <p>${l.friday_open} - ${l.friday_close}</p>
-    </div>
-    <div>
-    <p>Sat:</p> <p>${l.saturday_open} - ${l.saturday_close}</p>
-    </div>
-    <div>
-    <p>Sun:</p> <p>CLOSED</p>
-    </div>
+    <table class="hours-table">
+      <tr data-day = "1" >
+      <th>Mon:</th>
+        <td>${l.monday_open} - ${l.monday_close}</td>
+      </tr>
+      <tr data-day = "2">
+      <th>Tue:</th>
+        <td>${l.tuesday_open} - ${l.tuesday_close}</td>
+      </tr>
+      <tr data-day = "3">
+        <th>Wed:</th>
+        <td>${l.wednesday_open} - ${l.wednesday_close}</td>
+      </tr>
+      <tr data-day = "4">
+        <th>Thu:</th>
+        <td>${l.thursday_open} - ${l.thursday_close}</td>
+      </tr>
+      <tr data-day = "5">
+        <th>Fri:</th>
+        <td>${l.friday_open} - ${l.friday_close}</td>
+      </tr>
+      <tr data-day = "6">
+        <th>Sat:</th>
+        <td>${l.saturday_open} - ${l.saturday_close}</td>
+      </tr>
+      <tr data-day = "0">
+        <th>Sun:</th>
+        <td>Closed</td>
+      </tr>
+    </table>
   `);
+
+  const dayIndex = now.getDay();
+
+  // ukloni prethodni highlight (sigurnost)
+  $(".hours-table tr").removeClass("active-day");
+
+  // pronađi red koji odgovara današnjem danu
+  $(`.hours-table tr[data-day="${dayIndex}"]`).addClass("active-day");
 
   $(".overlay").show();
 }
 
 function renderView() {
-  if (window.innerWidth > 768) {
+  if (window.innerWidth > 600) {
     $(".location-list").show();
     $(".map-wrap").show();
     return;
@@ -229,8 +273,9 @@ function renderButtons() {
 }
 
 function getOpenStatus(location) {
-  const now = new Date();
   const dayIndex = now.getDay();
+
+  console.log(dayIndex);
 
   const days = [
     "sunday",
@@ -269,15 +314,60 @@ function getOpenStatus(location) {
   const openMinutes = convertToMinutes(open);
   const closeMinutes = convertToMinutes(close);
 
-  if (nowMinutes >= openMinutes && nowMinutes <= closeMinutes) {
+  let isOpen = false;
+
+  if (closeMinutes < openMinutes) {
+    // radi preko ponoći
+    if (nowMinutes >= openMinutes || nowMinutes <= closeMinutes) {
+      isOpen = true;
+    }
+  } else {
+    if (nowMinutes >= openMinutes && nowMinutes <= closeMinutes) {
+      isOpen = true;
+    }
+  }
+
+  if (isOpen) {
     return { text: `Open until ${close}`, type: "open" };
   }
 
-  if (nowMinutes < openMinutes) {
-    return { text: `Opens at ${open}`, type: "soon" };
-  }
+  return { text: `Closed until ${open}`, type: "closed" };
+}
 
-  return { text: "Closed", type: "closed" };
+function calculateAllDistances() {
+  if (!state.userLocation) return;
+
+  state.locations.forEach((loc) => {
+    if (!loc.latitude || !loc.longitude) return;
+
+    const lat = parseFloat(loc.latitude);
+    const lng = parseFloat(loc.longitude);
+
+    if (isNaN(lat) || isNaN(lng)) return;
+
+    loc.distance = getDistanceInMiles(
+      state.userLocation.lat,
+      state.userLocation.lng,
+      lat,
+      lng,
+    ).toFixed(1);
+  });
+}
+
+function getDistanceInMiles(lat1, lon1, lat2, lon2) {
+  const R = 3958.8; // Earth radius in miles
+  const toRad = (deg) => deg * (Math.PI / 180);
+
+  const dLat = toRad(lat2 - lat1);
+  const dLon = toRad(lon2 - lon1);
+
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) ** 2;
+
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+  return R * c;
 }
 
 function render() {
