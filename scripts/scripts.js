@@ -17,10 +17,11 @@ const dayIndex = now.getDay();
 $(document).ready(function () {
   $.ajax({
     method: "GET",
-    url: "locations.json", //"https://my.api.mockaroo.com/locations.json?key=e6f81d90",
+    url: "https://my.api.mockaroo.com/locations.json?key=e6f81d90",
     dataType: "json",
   }).done(function (response) {
     state.locations = response;
+    console.log(response);
     renderLocations();
     render();
 
@@ -82,7 +83,7 @@ $(document).ready(function () {
     render();
   });
 
-  $(document).on("click", ".overlay-close, .overlay-backdrop", function () {
+  $(document).on("click", ".overlay-closer, .overlay-backdrop", function () {
     state.isOverlayOpen = false;
     state.isActiveLocation = null;
     render();
@@ -234,7 +235,7 @@ function renderOverlay() {
       </tr>
       <tr data-day = "0">
         <th>Sun:</th>
-        <td>Closed</td>
+        <td>${l.sunday_open} - ${l.sunday_close}</td>
       </tr>
     </table>
   `);
