@@ -158,6 +158,9 @@ main {
   padding: 20px;
   height: 300px;
   cursor: pointer;
+  border: 0;
+  border-radius: 0;
+  box-shadow: lightgray 0px 0px 5px;
 }
 
 .card-head {
@@ -193,35 +196,47 @@ main {
   color: #f9980d;
 }
 
+.overlay {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 100%;
+}
+
 .overlay-closer {
   position: absolute;
   top: 0;
-  height: 100%;
+  width: fit-content;
+  justify-content: center;
+  right: 21px;
+  cursor: pointer;
+}
+
+.overlay-backdrop {
+  position: relative;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
   width: 100%;
-  display: none;
+  height: 100%;
+  display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.overlay-backdrop {
-  position: absolute;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.6);
-}
-
 .overlay-panel {
-  position: absolute;
+  position: relative;
   width: 80%;
   height: 80%;
   background: white;
   padding: 20px;
-  top: 10%;
-  right: 10%;
+  display: flex;
+  flex-direction: column;
 }
 
 .ov-actions {
   display: flex;
   width: 100%;
+  height: 15%;
   justify-content: space-between;
 }
 
@@ -231,9 +246,26 @@ main {
   width: 45%;
   background: transparent;
   border: 0;
-  margin: 25px 0;
   gap: 5px;
   color: var(--color-accent);
+  height: 100%;
+  align-items: center;
+}
+
+.details-container {
+  height: 60%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
+.ov-details {
+  width: 100%;
+  background: #444444;
+  height: 40px;
+  color: white;
+  border-radius: 5px;
+  border: 0;
 }
 
 .hours-table {
@@ -261,22 +293,6 @@ tr {
 
 .hours-table tr .active {
   font-weight: 500;
-}
-
-.details-container {
-  height: 19%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.ov-details {
-  width: 100%;
-  background: #444444;
-  height: 40px;
-  color: white;
-  border-radius: 5px;
-  border: 0;
 }
 
 .status {
@@ -378,7 +394,9 @@ tr {
     width: 100%;
     display: flex;
     justify-content: center;
-    border: 1px solid lightgray;
+    border: 0;
+    border-radius: 0;
+    box-shadow: lightgray 0px 0px 5px;
   }
 
   .map-wrap {
