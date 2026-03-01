@@ -242,10 +242,8 @@ function renderOverlay() {
 
   const dayIndex = now.getDay();
 
-  // ukloni prethodni highlight (sigurnost)
   $(".hours-table tr").removeClass("active-day");
 
-  // pronađi red koji odgovara današnjem danu
   $(`.hours-table tr[data-day="${dayIndex}"]`).addClass("active-day");
 
   $(".overlay").show();
@@ -318,7 +316,6 @@ function getOpenStatus(location) {
   let isOpen = false;
 
   if (closeMinutes < openMinutes) {
-    // radi preko ponoći
     if (nowMinutes >= openMinutes || nowMinutes <= closeMinutes) {
       isOpen = true;
     }
@@ -356,7 +353,7 @@ function calculateAllDistances() {
 }
 
 function getDistanceInMiles(lat1, lon1, lat2, lon2) {
-  const R = 3958.8; // Earth radius in miles
+  const R = 3958.8;
   const toRad = (deg) => deg * (Math.PI / 180);
 
   const dLat = toRad(lat2 - lat1);
