@@ -19,34 +19,45 @@ $(document).ready(function () {
     method: "GET",
     url: "https://my.api.mockaroo.com/locations.json?key=e6f81d90",
     dataType: "json",
-  }).done(function (response) {
-    state.locations = response;
-    console.log(response);
-    renderLocations();
-    render();
-
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        function (position) {
-          state.userLocation = {
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
-          };
-
-          calculateAllDistances();
-          renderLocations();
-          render();
-        },
-        function () {
-          renderLocations();
-          render();
-        },
-      );
-    } else {
+  })
+    .done(function (response) {
+      state.locations = response;
+      console.log(response);
       renderLocations();
       render();
-    }
-  });
+
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          function (position) {
+            state.userLocation = {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude,
+            };
+
+            calculateAllDistances();
+            renderLocations();
+            render();
+          },
+          function () {
+            renderLocations();
+            render();
+          },
+        );
+      } else {
+        renderLocations();
+        render();
+      }
+    })
+    .fail(function (error) {
+      console.error("Failed to fetch locations:", error);
+
+      $(".location-list").html(`
+      <div class="error-state">
+        <p>We're unable to load locations right now.</p>
+        <button class="retry-btn">Retry</button>
+      </div>
+    `);
+    });
 
   $(document).on("click", ".card", function (e) {
     e.preventDefault();
@@ -55,7 +66,6 @@ $(document).ready(function () {
     const location = state.locations.find((l) => l.id == id);
     state.selectedLocation = location;
     state.isActiveLocation = null;
-    $(".placeholder").hide();
     console.log(now);
     renderMap();
     if (window.innerWidth < 782) {
@@ -70,10 +80,9 @@ $(document).ready(function () {
     }
   });
 
-  $(document).on("click", ".more-info", function (e) {
+  $(document).on("click", ".btn-more-info", function (e) {
     e.preventDefault();
     e.stopPropagation();
-    $(".placeholder").hide();
     const id = $(this).closest(".card").data("id");
     const location = state.locations.find((l) => l.id == id);
     state.isActiveLocation = location;
@@ -103,6 +112,7 @@ $(document).ready(function () {
 
   $(document).on("click", ".btn-directions, .ov-directions", function (e) {
     e.preventDefault();
+    e.stopPropagation();
     const id = $(this).closest(".card").data("id");
     const location =
       state.locations.find((l) => l.id == id) || state.selectedLocation;
@@ -125,7 +135,9 @@ $(document).ready(function () {
     renderView();
   });
 
-  $(document).on("click", ".ov-details", function () {
+  $(document).on("click", ".ov-details", function (e) {
+    e.preventDefault();
+    e.stopPropagation();
     if (!state.selectedLocation) return;
 
     const url = state.selectedLocation.url;
@@ -147,26 +159,29 @@ function renderLocations() {
       <div class="card" data-id="${element.id}">
         <div class="card-text">
           <div class="card-head">
-            <h3>${element.name}</h3>
-            <p>${element.distance ? element.distance + " mi" : ""}</p>
+            <h5>${element.name}</h5>
+            <span>${element.distance ? element.distance + "miles" : ""}</span>
           </div>
+          <div class="card-body">
+            <div class="card-address">
+              <span>${element.address}</span>
+              <span class="card-city">${element.city}, ${element.state} ${element.postal_code}</span>            
+            </div>
 
-          <p>${element.address}</p>
-          <p>${element.city}, ${element.state} ${element.postal_code}</p>
+              <span class="status ${status.type}">
+                ${status.text}
+              </span>
 
-          <p class="status ${status.type}">
-            ${status.text}
-          </p>
-
-          <div class="card-bottom">
-            <img src="assets/phone-icon.png" />
-            <p>${element.phone ? element.phone : "(555) 123-4567"}</p>
+              <div class="card-phone">
+                <img src="assets/phone-icon.png" />
+                <a href="tel:${element.phone ? element.phone : "123-456-7890"}">${element.phone ? element.phone : "123-456-7890"}</a>
+              </div>
           </div>
         </div>
 
-        <div class="card-buttons">
+        <div class="card-bottom">
           <button class="btn-directions">DIRECTIONS</button>
-          <button class="more-info">MORE INFO</button>
+          <button class="btn-more-info">MORE INFO</button>
         </div>
       </div>
     `;
@@ -176,8 +191,13 @@ function renderLocations() {
 }
 
 function renderMap() {
-  if (!state.selectedLocation) return;
+  if (!state.selectedLocation) {
+    $(".placeholder").show();
+    $(".map").attr("src", "");
+    return;
+  }
 
+  $(".placeholder").hide();
   const lat = state.selectedLocation.latitude;
   const lng = state.selectedLocation.longitude;
 
@@ -203,38 +223,39 @@ function renderOverlay() {
   const l = state.selectedLocation;
 
   $(".ov-name").text(l.name);
-  $(".ov-address").text(`${l.address}, ${l.city}, ${l.state} ${l.postal_code}`);
+  $(".ov-address").text(`${l.address} `);
+  $(".ov-state").text(`${l.city}, ${l.state} ${l.postal_code}`);
 
   $(".ov-phone").text(l.phone ? l.phone : "Phone: (555) 123-4567");
 
   $(".ov-hours").html(`
     <table class="hours-table">
       <tr data-day = "1" >
-      <th>Mon:</th>
+      <th>Monday</th>
         <td>${l.monday_open} - ${l.monday_close}</td>
       </tr>
       <tr data-day = "2">
-      <th>Tue:</th>
+      <th>Tuesday</th>
         <td>${l.tuesday_open} - ${l.tuesday_close}</td>
       </tr>
       <tr data-day = "3">
-        <th>Wed:</th>
+        <th>Wednesday</th>
         <td>${l.wednesday_open} - ${l.wednesday_close}</td>
       </tr>
       <tr data-day = "4">
-        <th>Thu:</th>
+        <th>Thursday</th>
         <td>${l.thursday_open} - ${l.thursday_close}</td>
       </tr>
       <tr data-day = "5">
-        <th>Fri:</th>
+        <th>Friday</th>
         <td>${l.friday_open} - ${l.friday_close}</td>
       </tr>
       <tr data-day = "6">
-        <th>Sat:</th>
+        <th>Saturday</th>
         <td>${l.saturday_open} - ${l.saturday_close}</td>
       </tr>
       <tr data-day = "0">
-        <th>Sun:</th>
+        <th>Sunday</th>
         <td>${l.sunday_open} - ${l.sunday_close}</td>
       </tr>
     </table>
@@ -242,8 +263,10 @@ function renderOverlay() {
 
   const dayIndex = now.getDay();
 
+  // ukloni prethodni highlight (sigurnost)
   $(".hours-table tr").removeClass("active-day");
 
+  // pronađi red koji odgovara današnjem danu
   $(`.hours-table tr[data-day="${dayIndex}"]`).addClass("active-day");
 
   $(".overlay").show();
@@ -288,8 +311,8 @@ function getOpenStatus(location) {
 
   const today = days[dayIndex];
 
-  const open = location[`${today}_open`];
-  const close = location[`${today}_close`];
+  const open = location[`${today}_open`].toLowerCase();
+  const close = location[`${today}_close`].toLowerCase();
 
   if (!open || !close) {
     return { text: "Closed", type: "closed" };
@@ -304,8 +327,8 @@ function getOpenStatus(location) {
     hours = parseInt(hours);
     minutes = parseInt(minutes);
 
-    if (modifier === "PM" && hours !== 12) hours += 12;
-    if (modifier === "AM" && hours === 12) hours = 0;
+    if (modifier === "pm" && hours !== 12) hours += 12;
+    if (modifier === "am" && hours === 12) hours = 0;
 
     return hours * 60 + minutes;
   }
@@ -316,6 +339,7 @@ function getOpenStatus(location) {
   let isOpen = false;
 
   if (closeMinutes < openMinutes) {
+    // radi preko ponoći
     if (nowMinutes >= openMinutes || nowMinutes <= closeMinutes) {
       isOpen = true;
     }
@@ -326,7 +350,7 @@ function getOpenStatus(location) {
   }
 
   if (isOpen) {
-    return { text: `Open until ${close}`, type: "open" };
+    return { text: `Open today until ${close}`, type: "open" };
   }
 
   return { text: `Closed until ${open}`, type: "closed" };
@@ -353,7 +377,7 @@ function calculateAllDistances() {
 }
 
 function getDistanceInMiles(lat1, lon1, lat2, lon2) {
-  const R = 3958.8;
+  const R = 3958.8; // Earth radius in miles
   const toRad = (deg) => deg * (Math.PI / 180);
 
   const dLat = toRad(lat2 - lat1);
