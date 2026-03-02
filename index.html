@@ -5,12 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
-      crossorigin="anonymous"
-    />
-    <link
       href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap"
       rel="stylesheet"
     />
@@ -20,12 +14,6 @@
       integrity="sha256-OaVG6prZf4v69dPg6PhVattBXkcOWQB62pdZ3ORyrao="
       crossorigin="anonymous"
     ></script>
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
-      crossorigin="anonymous"
-    ></script>
-    <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"></script>
     <script type="text/javascript" src="scripts/scripts.js"></script>
   </head>
   <body>
@@ -50,7 +38,7 @@
           </nav>
           <div class="location-menu">
             <img src="assets/location-icon.png" alt="Location Image" />
-            <p>Truck Locator</p>
+            <span>Truck Locator</span>
           </div>
         </div>
         <img
@@ -63,7 +51,7 @@
     <main>
       <section class="content-container">
         <div class="page-header">
-          <h2>Found 3 Taco Trucks in 92121</h2>
+          <h1>Found 3 Taco Trucks in 92121</h1>
         </div>
         <div class="content">
           <div class="location-list"></div>
@@ -75,26 +63,49 @@
             <div class="overlay">
               <div class="overlay-backdrop">
                 <div class="overlay-panel">
-                  <div class="overlay-closer">X</div>
-                  <img src="/assets/placeholder.png" alt="" />
-
-                  <h3 class="ov-name"></h3>
-                  <p class="ov-address"></p>
-                  <p class="ov-phone"></p>
-
-                  <div class="ov-actions">
-                    <button class="ov-number">
-                      <img src="assets/phone-icon.png" alt="Phone number" />
-                      <span>123-456-7890</span>
-                    </button>
-                    <button class="ov-directions">
-                      <img src="assets/direction-icon.png" alt="Directions" />
-                      <span>Get Directions</span>
-                    </button>
+                  <div class="overlay-closer">
+                    <svg
+                      width="800px"
+                      height="800px"
+                      class="overlay-closer-icon"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M19 5L5 19"
+                        stroke="#a2a2a4"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                      />
+                      <path
+                        d="M5 5L19 19"
+                        stroke="#a2a2a4"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                      />
+                    </svg>
                   </div>
-                  <div class="details-container">
-                    <div class="ov-hours"></div>
+                  <img src="/assets/placeholder.png" alt="" />
+                  <div class="overlay-content">
+                    <h5 class="ov-name"></h5>
+                    <div>
+                      <span class="ov-address"></span>
+                      <span class="ov-state"></span>
+                    </div>
 
+                    <div class="ov-actions">
+                      <button class="ov-number">
+                        <img src="assets/phone-icon.png" alt="Phone number" />
+                        <a href="tel:123-456-7890">123-456-7890</a>
+                      </button>
+                      <button class="ov-directions">
+                        <img src="assets/direction-icon.png" alt="Directions" />
+                        <span>Get Directions</span>
+                      </button>
+                    </div>
+
+                    <div class="ov-hours"></div>
                     <button class="ov-details">VIEW FULL DETAILS</button>
                   </div>
                 </div>
