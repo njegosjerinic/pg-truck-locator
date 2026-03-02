@@ -19,45 +19,33 @@ $(document).ready(function () {
     method: "GET",
     url: "https://my.api.mockaroo.com/locations.json?key=e6f81d90",
     dataType: "json",
-  })
-    .done(function (response) {
-      state.locations = response;
-      console.log(response);
+  }).done(function (response) {
+    state.locations = response;
+    renderLocations();
+    render();
+
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        function (position) {
+          state.userLocation = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          };
+
+          calculateAllDistances();
+          renderLocations();
+          render();
+        },
+        function () {
+          renderLocations();
+          render();
+        },
+      );
+    } else {
       renderLocations();
       render();
-
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          function (position) {
-            state.userLocation = {
-              lat: position.coords.latitude,
-              lng: position.coords.longitude,
-            };
-
-            calculateAllDistances();
-            renderLocations();
-            render();
-          },
-          function () {
-            renderLocations();
-            render();
-          },
-        );
-      } else {
-        renderLocations();
-        render();
-      }
-    })
-    .fail(function (error) {
-      console.error("Failed to fetch locations:", error);
-
-      $(".location-list").html(`
-      <div class="error-state">
-        <p>We're unable to load locations right now.</p>
-        <button class="retry-btn">Retry</button>
-      </div>
-    `);
-    });
+    }
+  });
 
   $(document).on("click", ".card", function (e) {
     e.preventDefault();
@@ -66,11 +54,9 @@ $(document).ready(function () {
     const location = state.locations.find((l) => l.id == id);
     state.selectedLocation = location;
     state.isActiveLocation = null;
-    console.log(now);
     renderMap();
     if (window.innerWidth < 782) {
       state.activeView = "map";
-      console.log(state.activeView);
       renderView();
       renderButtons();
     }
@@ -263,10 +249,8 @@ function renderOverlay() {
 
   const dayIndex = now.getDay();
 
-  // ukloni prethodni highlight (sigurnost)
   $(".hours-table tr").removeClass("active-day");
 
-  // pronađi red koji odgovara današnjem danu
   $(`.hours-table tr[data-day="${dayIndex}"]`).addClass("active-day");
 
   $(".overlay").show();
@@ -296,8 +280,6 @@ function renderButtons() {
 
 function getOpenStatus(location) {
   const dayIndex = now.getDay();
-
-  console.log(dayIndex);
 
   const days = [
     "sunday",
@@ -339,7 +321,6 @@ function getOpenStatus(location) {
   let isOpen = false;
 
   if (closeMinutes < openMinutes) {
-    // radi preko ponoći
     if (nowMinutes >= openMinutes || nowMinutes <= closeMinutes) {
       isOpen = true;
     }
@@ -377,7 +358,7 @@ function calculateAllDistances() {
 }
 
 function getDistanceInMiles(lat1, lon1, lat2, lon2) {
-  const R = 3958.8; // Earth radius in miles
+  const R = 3958.8;
   const toRad = (deg) => deg * (Math.PI / 180);
 
   const dLat = toRad(lat2 - lat1);
