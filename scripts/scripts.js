@@ -357,9 +357,6 @@ function calculateAllDistances() {
   });
 
   state.locations.sort((a, b) => a.distance - b.distance);
-
-  console.log("After sort:");
-  state.locations.forEach((l) => console.log(l.distance));
 }
 
 function getDistanceInMiles(lat1, lon1, lat2, lon2) {
