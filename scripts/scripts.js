@@ -340,21 +340,26 @@ function getOpenStatus(location) {
 function calculateAllDistances() {
   if (!state.userLocation) return;
 
-  state.locations.forEach((loc) => {
-    if (!loc.latitude || !loc.longitude) return;
+  state.locations.forEach((location) => {
+    if (!location.latitude || !location.longitude) return;
 
-    const lat = parseFloat(loc.latitude);
-    const lng = parseFloat(loc.longitude);
+    const lat = parseFloat(location.latitude);
+    const lng = parseFloat(location.longitude);
 
     if (isNaN(lat) || isNaN(lng)) return;
 
-    loc.distance = getDistanceInMiles(
+    location.distance = getDistanceInMiles(
       state.userLocation.lat,
       state.userLocation.lng,
       lat,
       lng,
     ).toFixed(1);
   });
+
+  state.locations.sort((a, b) => a.distance - b.distance);
+
+  console.log("After sort:");
+  state.locations.forEach((l) => console.log(l.distance));
 }
 
 function getDistanceInMiles(lat1, lon1, lat2, lon2) {
