@@ -81,7 +81,7 @@ button {
   padding: 5px 0;
 }
 
-.header .desktop-container {
+.header .container {
   width: min(90%, 1200px);
   margin: auto;
   display: flex;
@@ -137,7 +137,7 @@ button {
     padding: 25px 0;
   }
 
-  .header .desktop-container {
+  .header .container {
     max-width: 1000px;
   }
 
