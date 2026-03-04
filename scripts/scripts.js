@@ -4,6 +4,7 @@ let state = {
   isActiveLocation: null,
   isOverlayOpen: false,
   activeView: "list",
+  loading: false,
 };
 
 const now = new Date(
@@ -14,13 +15,17 @@ const now = new Date(
 
 const dayIndex = now.getDay();
 
+// Initialize app on DOM ready
 $(document).ready(function () {
+  state.loading = true;
+  renderLoader();
   $.ajax({
     method: "GET",
     url: "https://my.api.mockaroo.com/locations.json?key=e6f81d90",
     dataType: "json",
   }).done(function (response) {
     state.locations = response;
+    state.loading = false;
     renderLocations();
     render();
 
@@ -134,11 +139,49 @@ $(document).ready(function () {
   });
 });
 
+// Handles loader visibility while fetching data
+function renderLoader() {
+  let locationContainer = $(".location-list");
+
+  if (state.loading) {
+    // Create loader if it doesn't exist
+    if (!locationContainer.find(".loader-container").length) {
+      const loader = `
+        <div class="loader-container">
+          <div class="loader">
+            <div class="loader-spinner"></div>
+            <p>Loading locations...</p>
+          </div>
+        </div>
+      `;
+      locationContainer.append(loader);
+    }
+    locationContainer.find(".loader-container").show();
+  } else {
+    locationContainer.find(".loader-container").hide();
+  }
+}
+
+// Renders all location cards based on current state
 function renderLocations() {
   let locationContainer = $(".location-list");
-  locationContainer.empty();
+  let truckIndex = 0;
 
+  // Always render loader first to show/hide based on loading state
+  renderLoader();
+
+  // Don't render location cards if loading
+  if (state.loading) {
+    return;
+  }
+
+  // Clear existing location cards but keep the loader
+  locationContainer.find(".card").remove();
   state.locations.forEach((element) => {
+    truckIndex++;
+
+    $("#truck-number").text(truckIndex);
+
     const status = getOpenStatus(element);
 
     let card = `
@@ -176,6 +219,7 @@ function renderLocations() {
   });
 }
 
+// Renders static Google Map for selected location
 function renderMap() {
   if (!state.selectedLocation) {
     $(".placeholder").show();
@@ -192,12 +236,14 @@ function renderMap() {
   $(".map").attr("src", mapUrl);
 }
 
+// Highlights currently active card in the list
 function renderActiveCard() {
   $(".card").removeClass("active");
   if (!state.isActiveLocation) return;
   $(`.card[data-id="${state.isActiveLocation.id}"]`).addClass("active");
 }
 
+// Renders location details modal (overlay)
 function renderOverlay() {
   if (!state.isOverlayOpen) {
     $(".overlay").hide();
@@ -256,6 +302,7 @@ function renderOverlay() {
   $(".overlay").show();
 }
 
+// Handles responsive view (list/map) based on screen size
 function renderView() {
   if (window.innerWidth > 600) {
     $(".location-list").show();
@@ -272,12 +319,14 @@ function renderView() {
   }
 }
 
+// Updates active state for list/map toggle buttons
 function renderButtons() {
   $(".btn-list, .btn-map").removeClass("active-button");
   if (state.activeView === "list") $(".btn-list").addClass("active-button");
   if (state.activeView === "map") $(".btn-map").addClass("active-button");
 }
 
+// Determines whether location is currently open and returns status text
 function getOpenStatus(location) {
   const dayIndex = now.getDay();
 
@@ -337,26 +386,30 @@ function getOpenStatus(location) {
   return { text: `Closed until ${open}`, type: "closed" };
 }
 
+// Calculates distance for all locations and sorts them by proximity
 function calculateAllDistances() {
   if (!state.userLocation) return;
 
-  state.locations.forEach((loc) => {
-    if (!loc.latitude || !loc.longitude) return;
+  state.locations.forEach((location) => {
+    if (!location.latitude || !location.longitude) return;
 
-    const lat = parseFloat(loc.latitude);
-    const lng = parseFloat(loc.longitude);
+    const lat = parseFloat(location.latitude);
+    const lng = parseFloat(location.longitude);
 
     if (isNaN(lat) || isNaN(lng)) return;
 
-    loc.distance = getDistanceInMiles(
+    location.distance = getDistanceInMiles(
       state.userLocation.lat,
       state.userLocation.lng,
       lat,
       lng,
     ).toFixed(1);
   });
+
+  state.locations.sort((a, b) => a.distance - b.distance);
 }
 
+// Returns distance between two coordinates using Haversine formula
 function getDistanceInMiles(lat1, lon1, lat2, lon2) {
   const R = 3958.8;
   const toRad = (deg) => deg * (Math.PI / 180);
@@ -373,6 +426,7 @@ function getDistanceInMiles(lat1, lon1, lat2, lon2) {
   return R * c;
 }
 
+// Central render orchestrator
 function render() {
   renderButtons();
   renderView();
