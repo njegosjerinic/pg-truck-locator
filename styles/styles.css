@@ -1,5 +1,6 @@
 /* CUSTOM STYLES HERE */
 
+/* ===== ROOT VARIABLES ===== */
 :root {
   --color-primary: #444444;
   --color-accent: #f9980d;
@@ -14,6 +15,7 @@
   --shadow-soft: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
+/* ===== GLOBAL STYLES ===== */
 * {
   margin: 0;
   padding: 0;
@@ -69,12 +71,17 @@ button {
   cursor: pointer;
 }
 
+button {
+  cursor: pointer;
+}
+
+/* ===== HEADER & NAVIGATION ===== */
 .header {
   background: var(--color-primary);
   padding: 5px 0;
 }
 
-.desktop-container {
+.header .desktop-container {
   width: min(90%, 1200px);
   margin: auto;
   display: flex;
@@ -120,6 +127,56 @@ button {
   padding: 0;
 }
 
+.page-header {
+  display: none;
+}
+
+@media (min-width: 600px) {
+  .header {
+    background: white;
+    padding: 25px 0;
+  }
+
+  .header .desktop-container {
+    max-width: 1000px;
+  }
+
+  .brand-img-desktop {
+    display: block;
+  }
+
+  .brand-img-mobile {
+    display: none;
+  }
+
+  .hamburger-btn {
+    display: none;
+  }
+
+  .location-icon {
+    display: none;
+  }
+
+  .menu {
+    display: flex;
+    align-items: baseline;
+    color: #444444;
+    gap: 30px;
+  }
+
+  .page-header {
+    display: block;
+    max-width: 1000px;
+    width: 100%;
+  }
+
+  .page-header h1 {
+    font-weight: 100;
+    margin-bottom: 20px;
+  }
+}
+
+/* ===== MAIN CONTENT LAYOUT ===== */
 main {
   width: 100%;
   display: flex;
@@ -127,12 +184,66 @@ main {
   align-items: center;
 }
 
+@media (min-width: 600px) {
+  main {
+    padding-top: 50px;
+    padding-bottom: 70px;
+  }
+}
+
+.content-container {
+  width: 100%;
+}
+
+@media (min-width: 600px) {
+  .content-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+  }
+}
+
+.content {
+  max-width: 1000px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  border: 0;
+  border-radius: 0;
+  box-shadow: lightgray 0px 0px 5px;
+}
+
+@media (min-width: 600px) {
+  .content {
+    max-width: 1000px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    border: 0;
+    border-radius: 0;
+    box-shadow: lightgray 0px 0px 5px;
+  }
+}
+
+/* ===== MAP & LOCATION LIST ===== */
 .map-wrap {
   width: 100%;
   height: calc(100vh - 110px);
   overflow: hidden;
   position: relative;
   display: none;
+}
+
+@media (min-width: 600px) {
+  .map-wrap {
+    width: 100%;
+    overflow: hidden;
+    display: block;
+    position: relative;
+    height: 650px;
+  }
 }
 
 .map {
@@ -142,21 +253,49 @@ main {
   display: block;
 }
 
+@media (min-width: 600px) {
+  .map {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    position: relative;
+  }
+}
+
 .location-list {
   width: 100%;
   height: calc(100vh - 110px);
   overflow-y: auto;
   display: block;
+  position: relative;
 }
 
-.page-header {
-  display: none;
+@media (min-width: 600px) {
+  .location-list {
+    display: block;
+    height: 650px;
+  }
 }
 
-.content-container {
+.placeholder {
   width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 0;
+  background: #d8d8d8;
+  cursor: auto;
+  color: #444444;
 }
 
+.placeholder p {
+  color: #4a4a4a;
+  font-weight: 600;
+}
+
+/* ===== BUTTON NAVIGATION ===== */
 .buttons {
   position: fixed;
   inset: auto 0 0 0;
@@ -183,6 +322,13 @@ main {
   color: white;
 }
 
+@media (min-width: 600px) {
+  .buttons {
+    display: none;
+  }
+}
+
+/* ===== CARDS ===== */
 .card {
   display: flex;
   flex-direction: column;
@@ -193,6 +339,10 @@ main {
   border: 0;
   border-radius: 0;
   box-shadow: lightgray 0px 0px 5px;
+}
+
+.card.active {
+  background-color: #f5f5f5;
 }
 
 .card-head {
@@ -234,6 +384,7 @@ main {
   width: 100%;
   margin-top: 20px;
   gap: 25px;
+  color: #f9980d;
 }
 
 .card-bottom button {
@@ -247,52 +398,19 @@ main {
   font-size: 12px;
 }
 
-.card.active {
-  background-color: #f5f5f5;
+@media (min-width: 600px) {
+  .card-bottom button {
+    font-size: 14px;
+  }
 }
 
-.card-bottom {
-  color: #f9980d;
-}
-
+/* ===== OVERLAY ===== */
 .overlay {
   position: absolute;
   top: 0;
   width: 100%;
   height: 100%;
   display: none;
-}
-
-.ov-state {
-  display: block;
-}
-
-.ov-name {
-  margin-bottom: 0;
-}
-
-.overlay-content {
-  margin-top: 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  font-size: 12px;
-}
-
-.overlay-closer {
-  position: absolute;
-  line-height: 0;
-  top: 2px;
-  width: fit-content;
-  justify-content: center;
-  right: 12px;
-  cursor: pointer;
-}
-
-.overlay-closer-icon {
-  width: 18px;
-  height: 18px;
-  color: var(--color-primary);
 }
 
 .overlay-backdrop {
@@ -313,6 +431,52 @@ main {
   padding: 20px 12.5px;
   display: flex;
   flex-direction: column;
+}
+
+@media (min-width: 600px) {
+  .overlay-panel {
+    height: 95%;
+    width: 95%;
+  }
+}
+
+.overlay-closer {
+  position: absolute;
+  line-height: 0;
+  top: 2px;
+  width: fit-content;
+  justify-content: center;
+  right: 12px;
+  cursor: pointer;
+}
+
+.overlay-closer-icon {
+  width: 18px;
+  height: 18px;
+  color: var(--color-primary);
+}
+
+.overlay-content {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 12px;
+}
+
+@media (min-width: 600px) {
+  .overlay-content {
+    font-size: 16px;
+    height: 100%;
+  }
+}
+
+.ov-name {
+  margin-bottom: 0;
+}
+
+.ov-state {
+  display: block;
 }
 
 .ov-actions {
@@ -353,6 +517,7 @@ main {
   margin-top: auto;
 }
 
+/* ===== HOURS TABLE ===== */
 .hours-table {
   width: 100%;
   border-collapse: collapse;
@@ -381,6 +546,12 @@ tr {
   font-weight: 500;
 }
 
+.active-day th,
+.active-day td {
+  font-weight: 700;
+}
+
+/* ===== STATUS INDICATORS ===== */
 .status.open {
   color: var(--color-status-open);
 }
@@ -393,142 +564,44 @@ tr {
   color: var(--color-status-soon);
 }
 
-.placeholder {
-  width: 100vw;
-  height: calc(100vh - 110px);
-  display: flex;
-  justify-content: center;
-  align-items: center;
+/* ===== LOADER ===== */
+.loader-container {
   position: absolute;
   top: 0;
-  background: #d8d8d8;
-  cursor: auto;
-  color: #444444;
-}
-
-.active-day th,
-.active-day td {
-  font-weight: 700;
-}
-
-@media (min-width: 600px) {
-  .header {
-    background: white;
-    padding: 25px 0;
-  }
-
-  .desktop-container {
-    max-width: 1000px;
-  }
-
-  .brand-img-desktop {
-    display: block;
-  }
-
-  .brand-img-mobile {
-    display: none;
-  }
-
-  .hamburger-btn {
-    display: none;
-  }
-
-  .location-icon {
-    display: none;
-  }
-
-  .buttons {
-    display: none;
-  }
-
-  .page-header {
-    display: block;
-    max-width: 1000px;
-    width: 100%;
-  }
-
-  .page-header h1 {
-    font-weight: 100;
-    margin-bottom: 20px;
-  }
-
-  .menu {
-    display: flex;
-    align-items: baseline;
-    color: #444444;
-    gap: 30px;
-  }
-
-  main {
-    padding-top: 50px;
-    padding-bottom: 70px;
-  }
-
-  .content-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding: 10px;
-  }
-
-  .content {
-    max-width: 1000px;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    border: 0;
-    border-radius: 0;
-    box-shadow: lightgray 0px 0px 5px;
-  }
-
-  .map-wrap {
-    width: 100%;
-    overflow: hidden;
-    display: block;
-    position: relative;
-    height: 650px;
-  }
-
-  .location-list {
-    display: block;
-    height: 650px;
-  }
-
-  .map {
-    height: 100%;
-    width: 100%;
-    object-fit: cover;
-    position: relative;
-  }
-
-  .card-bottom button {
-    font-size: 14px;
-  }
-
-  .overlay-content {
-    font-size: 16px;
-    height: 100%;
-  }
-
-  .overlay-panel {
-    height: 95%;
-    width: 95%;
-  }
-}
-
-.placeholder {
+  left: 0;
   width: 100%;
   height: 100%;
   display: flex;
-  justify-content: center;
   align-items: center;
-  position: absolute;
-  top: 0;
-  background: #d8d8d8;
+  justify-content: center;
+  background-color: rgba(255, 255, 255, 0.9);
+  z-index: 10;
 }
 
-.placeholder p {
-  color: #4a4a4a;
-  font-weight: 600;
+.loader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.loader-spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid var(--color-accent);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.loader p {
+  color: var(--color-primary);
+  font-size: 16px;
+  font-weight: 500;
+  margin: 0;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
